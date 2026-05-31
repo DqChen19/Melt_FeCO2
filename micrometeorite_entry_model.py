@@ -420,170 +420,169 @@ def simulate_particle(input_mass, input_vel, input_theta, co2_percent=-1):
             if co2_lower <= co2_surface_vol <= co2_upper:
                 break
             
-        #with open(f'./logfile/Redo_Output_CO2_{int(co2_surface_vol)}_oxi_extrp.log','a') as f:
-        #    with redirect_stdout(f):
-        alt, vel, theta, mass_fe, mass_feo, temp = y_in
+        with open(f'./Single_example/Output_CO2_0.2.log','a') as f:
+            with redirect_stdout(f):
+                alt, vel, theta, mass_fe, mass_feo, temp = y_in
 
-        time_step = time 
+                time_step = time 
 
-        #avoiding breaking the particle is completely evaporated
-        if mass_fe < 0:
-            mass_fe = 0
-        if mass_feo < 0:
-            mass_feo = 0
+                #avoiding breaking the particle is completely evaporated
+                if mass_fe < 0:
+                    mass_fe = 0
+                if mass_feo < 0:
+                    mass_feo = 0
 
-        if mass_fe == 0 and mass_feo == 0:
-            return [0, 0, 0, 0, 0, 0]
+                if mass_fe == 0 and mass_feo == 0:
+                    return [0, 0, 0, 0, 0, 0]
 
-        rad, rho_m = get_radius_and_density(mass_fe, mass_feo)
+                rad, rho_m = get_radius_and_density(mass_fe, mass_feo)
 
-        #calculate gravity
-        gravity = GRAV_CONST*EARTH_MASS/alt**2
-
-
-        ########################Track Motion###########################
-
-        #new radius from law of cosines
-        new_alt = ((vel*time_step)**2 + alt**2 - \
-                2*alt*vel*time_step*cos(theta))**0.5
-
-        #alpha will always be acute since we use small time steps
-        alpha = asin(vel*time_step*sin(theta)/new_alt)
-        phi = pi - alpha - theta
-
-        new_vel = (vel**2 + (gravity*time_step)**2 - \
-                2*vel*gravity*time_step*cos(phi))**0.5
-
-        new_theta = 0
-        if phi > pi/2:
-            #new theta is acute
-            new_theta = asin(vel*sin(phi)/new_vel)
-        else:
-            #new theta is likely obtuse
-            rho = asin(gravity*time_step*sin(phi)/new_vel)
-            new_theta = pi - rho - phi
+                #calculate gravity
+                gravity = GRAV_CONST*EARTH_MASS/alt**2
 
 
-        d_alt_dt = (new_alt - alt)/time_step
-        tracker["d_alt_dt"] = d_alt_dt
-        d_theta_dt = (new_theta - theta)/time_step
+                ########################Track Motion###########################
 
-        #######################End Motion###############################
+                #new radius from law of cosines
+                new_alt = ((vel*time_step)**2 + alt**2 - \
+                        2*alt*vel*time_step*cos(theta))**0.5
 
-        #calculate the atmospheric density and total oxygen density
-        rho_a, o_wt, co2_wt = atmospheric_density_and_oxygen(alt,co2_surface_vol, co2_lower, co2_upper)
-        #if co2_percent != -1:
-            #CO2 is the oxidant, so store CO2 density in the oxidant variable
-            #rho_o = rho_a*co2_percent #use rho_o to track CO2 density
-        #calculate the velocity derivative
-        d_vel_dt = (new_vel - vel)/time_step - 0.75*rho_a*vel**2/(rho_m*rad) 
+                #alpha will always be acute since we use small time steps
+                alpha = asin(vel*time_step*sin(theta)/new_alt)
+                phi = pi - alpha - theta
 
-        #vapor pressure for FeO [Pa] from equation 7
-        if temp<0:
-            print('p_v: wrong temp: ', temp)
-        p_v = 10**(10.3-20126/temp)
+                new_vel = (vel**2 + (gravity*time_step)**2 - \
+                        2*vel*gravity*time_step*cos(phi))**0.5
 
-        #a note about ox_enc. This variable is recording the total oxygen (in
-        #kg s-1) that is being absorbed by the micrometeorite. For CO2 reactions
-        #this calculation uses kinetics while reactions with O2 just follow the
-        #total oxygen concentration. See equation 10 for details. 
-        ox_enc = 0
-        ox_test_enc = 0 #to account for O2 in CO2-N2_O2 atmosphere
-        rate_co2,add_o,add_co2,co2_rho,ram_p = 0,0,0,0,0
-        if temp > temp_thre:
-            if co2_percent != -1:
-                #this is oxidation via CO2, use kinetics
-                co2_rho = rho_a*co2_wt# [kg/m3] 
-                o_rho = rho_a*o_wt# [kg/m3]                     
-                S = pi*rad**2 #m2
-                add_o = vel*S*o_rho #[kg s-1]
-                ram_p = 1/2*vel**2*co2_rho #[kg m-1 s-2]
-                k_rate = fe_co2_rate_pressure(temp, ram_p) #mol m-2 s-1 Pa-1 # Scenario 2
-                if k_rate > 0:
-
-                    #k_rate = fe_co2_rate_constant(temp)  #[mol m-2 s-1 Pa-1] # Scenario 3
-                    add_co2 = vel*M_O*S*co2_rho/M_CO2 #[kg s-1]
-                    Gamma_d = 1.3 # Drag coefficient in Deluca+ 2019
-                    Cd = 2*Gamma_d # Drag coefficient commonly used
-                    rate_co2 = Cd * S * M_O * k_rate * ram_p#[kg s-1]
-                    
-                    if rate_co2<add_co2:
-                        ox_enc = rate_co2 + add_o
-                    else:
-                        ox_enc = add_co2 + add_o 
+                new_theta = 0
+                if phi > pi/2:
+                    #new theta is acute
+                    new_theta = asin(vel*sin(phi)/new_vel)
                 else:
-                    ox_enc = add_o
-                #ox_enc = add_co2 + add_o #Scenario 1
-            else:
-                #let oxygen be absorbed following equation 10.
-                rho_o2 = 0
-                ox_enc = GAMMA*rho_o2*pi*rad**2*vel
+                    #new theta is likely obtuse
+                    rho = asin(gravity*time_step*sin(phi)/new_vel)
+                    new_theta = pi - rho - phi
 
-            
-        #the Langmuir formula for mass loss rate in [kg s-1] of FeO (eq. 6)
-        dm_evap_fe_dt = 0 #if we need to evaporate Fe store it here
-        if M_FEO/(2*pi*GAS_CONST*temp)<0:
-            print('wrong temperature: ', temp)
-        
-        dm_evap_dt = 4*pi*rad**2*p_v*sqrt(M_FEO/(2*pi*GAS_CONST*temp)) #FeO evap
 
-        if dm_evap_dt*time_step > mass_feo: 
-            #we're evaporating more FeO than exists, so evaporate Fe as well and
-            #find what fraction of dt we evaporate FeO, then the rest of dt
-            #we'll assume Fe is evaporating
-            feo_evap_frac = mass_feo/dm_evap_dt/time_step #FeO evaporate frac
-            fe_evap_frac = 1.0 - feo_evap_frac
-            p_v_fe = 10**(11.51 - 1.963e4/temp) #Fe evap rate (eq. 8)
-            dm_evap_fe_dt = 4*pi*rad**2*p_v_fe*sqrt(M_FE/(2*pi*GAS_CONST*temp))
-            dm_evap_fe_dt *= fe_evap_frac
-            dm_evap_dt *= feo_evap_frac
+                d_alt_dt = (new_alt - alt)/time_step
+                tracker["d_alt_dt"] = d_alt_dt
+                d_theta_dt = (new_theta - theta)/time_step
 
-        dmass_feo_dt = -dm_evap_dt + (M_FEO/M_O)*(ox_enc + ox_test_enc)
-        dmass_fe_dt = -(M_FE/M_O)*(ox_enc + ox_test_enc) - dm_evap_fe_dt
-        
-        #print(f"{vel:.6g}, {temp:.6g}, {(alt-EARTH_RAD)/1000:.6g}, {ox_enc:.3g}, {rate_co2:.3g}, {add_o: .3g}, {add_co2:.3g}, {ram_p:.6g}")
-    
-        #combine all the evaporative loses here
-        #NOTE: the latent heat of FeO=Fe for evaporation in our model.
-        total_evap_dt = dm_evap_fe_dt + dm_evap_dt
-        
-        #oxidation via CO2 is endothermic so DELTA_H_OX is negative
-        DELTA_H_OX = DELTA_H_OX_CO2
-        if co2_percent == -1:
-            #oxidation via oxygen is exothermic
-            DELTA_H_OX = DELTA_H_OX_O2
+                #######################End Motion###############################
 
-        ox_test_qt_ox_dt = 0
+                #calculate the atmospheric density and total oxygen density
+                rho_a, o_wt, co2_wt = atmospheric_density_and_oxygen(alt,co2_surface_vol, co2_lower, co2_upper)
+                #if co2_percent != -1:
+                    #CO2 is the oxidant, so store CO2 density in the oxidant variable
+                    #rho_o = rho_a*co2_percent #use rho_o to track CO2 density
+                #calculate the velocity derivative
+                d_vel_dt = (new_vel - vel)/time_step - 0.75*rho_a*vel**2/(rho_m*rad) 
 
-        #total heat of oxidation
-        dq_ox_dt = DELTA_H_OX*(M_FEO/M_O)*ox_enc + ox_test_qt_ox_dt 
+                #vapor pressure for FeO [Pa] from equation 7
+                if temp<0:
+                    print('p_v: wrong temp: ', temp)
+                p_v = 10**(10.3-20126/temp)
 
-        #the change in temperature (eq. 5)
-        dtemp_dt = 1/(rad*C_SP*rho_m)*\
-                    (3*rho_a*vel**3/8 - 3*L_V*total_evap_dt/(4*pi*rad**2) - 
-                    3*SIGMA*temp**4 + 3*dq_ox_dt/(4*pi*rad**2))
-        
-        if temp<0:
-            print(dtemp_dt)
+                #a note about ox_enc. This variable is recording the total oxygen (in
+                #kg s-1) that is being absorbed by the micrometeorite. For CO2 reactions
+                #this calculation uses kinetics while reactions with O2 just follow the
+                #total oxygen concentration. See equation 10 for details. 
+                ox_enc = 0
+                ox_test_enc = 0 #to account for O2 in CO2-N2_O2 atmosphere
+                rate_co2,add_o,add_co2,co2_rho,ram_p = 0,0,0,0,0
+                if temp > temp_thre:
+                    if co2_percent != -1:
+                        #this is oxidation via CO2, use kinetics
+                        co2_rho = rho_a*co2_wt# [kg/m3] 
+                        o_rho = rho_a*o_wt# [kg/m3]                     
+                        S = pi*rad**2 #m2
+                        add_o = vel*S*o_rho #[kg s-1]
+                        ram_p = 1/2*vel**2*co2_rho #[kg m-1 s-2]
+                        k_rate = fe_co2_rate_pressure(temp, ram_p) #mol m-2 s-1 Pa-1 # Scenario 2
+                        if k_rate > 0:
 
-        #check the temperatures, stop the simulation if the temp has peaked
-        #and solidified
-        #first set the peak temperature if needed
-        if temp > tracker["peak_temp"]:
-            tracker["peak_temp"] = temp
+                            #k_rate = fe_co2_rate_constant(temp)  #[mol m-2 s-1 Pa-1] # Scenario 3
+                            add_co2 = vel*M_O*S*co2_rho/M_CO2 #[kg s-1]
+                            Gamma_d = 1.3 # Drag coefficient in Deluca+ 2019
+                            Cd = 2*Gamma_d # Drag coefficient commonly used
+                            rate_co2 = Cd * S * M_O * k_rate * ram_p#[kg s-1]
+                            
+                            if rate_co2<add_co2:
+                                ox_enc = rate_co2 + add_o
+                            else:
+                                ox_enc = add_co2 + add_o 
+                        else:
+                            ox_enc = add_o
+                        #ox_enc = add_co2 + add_o #Scenario 1
+                    else:
+                        #let oxygen be absorbed following equation 10.
+                        rho_o2 = 0
+                        ox_enc = GAMMA*rho_o2*pi*rad**2*vel
 
-        if temp < tracker["peak_temp"]/2.5 and temp < temp_thre: #FEO_MELTING_TEMP:
-            
-            #one last check on the temperature. Sometimes the solver oscillates
-            #for a step or two and can trigger an end, only end if the step was
-            #less than a 10% change in temp. The oscillation will be caught as
-            #an error and trigger a rerun with a smaller step size.
-            if temp > tracker["last_temp"]*0.85:
-                #setting this to True stops the simulation
-                tracker["solidified"] = True
-            if temp<0:
-                print(temp)
-        tracker["last_temp"] = temp
+                    
+                #the Langmuir formula for mass loss rate in [kg s-1] of FeO (eq. 6)
+                dm_evap_fe_dt = 0 #if we need to evaporate Fe store it here
+                if M_FEO/(2*pi*GAS_CONST*temp)<0:
+                    print('wrong temperature: ', temp)
+                
+                dm_evap_dt = 4*pi*rad**2*p_v*sqrt(M_FEO/(2*pi*GAS_CONST*temp)) #FeO evap
+
+                if dm_evap_dt*time_step > mass_feo: 
+                    #we're evaporating more FeO than exists, so evaporate Fe as well and
+                    #find what fraction of dt we evaporate FeO, then the rest of dt
+                    #we'll assume Fe is evaporating
+                    feo_evap_frac = mass_feo/dm_evap_dt/time_step #FeO evaporate frac
+                    fe_evap_frac = 1.0 - feo_evap_frac
+                    p_v_fe = 10**(11.51 - 1.963e4/temp) #Fe evap rate (eq. 8)
+                    dm_evap_fe_dt = 4*pi*rad**2*p_v_fe*sqrt(M_FE/(2*pi*GAS_CONST*temp))
+                    dm_evap_fe_dt *= fe_evap_frac
+                    dm_evap_dt *= feo_evap_frac
+
+                dmass_feo_dt = -dm_evap_dt + (M_FEO/M_O)*(ox_enc + ox_test_enc)
+                dmass_fe_dt = -(M_FE/M_O)*(ox_enc + ox_test_enc) - dm_evap_fe_dt
+                
+                print(f"{vel:.6g}, {temp:.6g}, {(alt-EARTH_RAD)/1000:.6g}, {ox_enc:.3g}, {rate_co2:.3g}, {add_o: .3g}, {add_co2:.3g}, {ram_p:.6g},{mass_fe:.5g},{mass_feo:.5g}")
+                #combine all the evaporative loses here
+                #NOTE: the latent heat of FeO=Fe for evaporation in our model.
+                total_evap_dt = dm_evap_fe_dt + dm_evap_dt
+                
+                #oxidation via CO2 is endothermic so DELTA_H_OX is negative
+                DELTA_H_OX = DELTA_H_OX_CO2
+                if co2_percent == -1:
+                    #oxidation via oxygen is exothermic
+                    DELTA_H_OX = DELTA_H_OX_O2
+
+                ox_test_qt_ox_dt = 0
+
+                #total heat of oxidation
+                dq_ox_dt = DELTA_H_OX*(M_FEO/M_O)*ox_enc + ox_test_qt_ox_dt 
+
+                #the change in temperature (eq. 5)
+                dtemp_dt = 1/(rad*C_SP*rho_m)*\
+                            (3*rho_a*vel**3/8 - 3*L_V*total_evap_dt/(4*pi*rad**2) - 
+                            3*SIGMA*temp**4 + 3*dq_ox_dt/(4*pi*rad**2))
+                
+                if temp<0:
+                    print(dtemp_dt)
+
+                #check the temperatures, stop the simulation if the temp has peaked
+                #and solidified
+                #first set the peak temperature if needed
+                if temp > tracker["peak_temp"]:
+                    tracker["peak_temp"] = temp
+
+                if temp < tracker["peak_temp"]/2.5 and temp < temp_thre: #FEO_MELTING_TEMP:
+                    
+                    #one last check on the temperature. Sometimes the solver oscillates
+                    #for a step or two and can trigger an end, only end if the step was
+                    #less than a 10% change in temp. The oscillation will be caught as
+                    #an error and trigger a rerun with a smaller step size.
+                    if temp > tracker["last_temp"]*0.85:
+                        #setting this to True stops the simulation
+                        tracker["solidified"] = True
+                    if temp<0:
+                        print(temp)
+                tracker["last_temp"] = temp
 
 
         return [d_alt_dt, 
@@ -1025,6 +1024,6 @@ if __name__ =='__main__':
         generateRandomSampleData(num_samples=100, output_dir=output_dir, input_dir="")
 
     else:
-        res = plot_particle_parameters(10.665E-9, 13000, 45*pi/180, CO2_frac=0.7) #CO2_frac can be changed to 0.5
+        res = plot_particle_parameters(3.665E-9 / 8, 15000, 45*pi/180, CO2_frac=0.2) #CO2_frac can be changed to 0.5
 
 
