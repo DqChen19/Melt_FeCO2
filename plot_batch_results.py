@@ -134,10 +134,10 @@ if __name__ == '__main__':
     fig3 = 1
     if fig3:
         fig, axes = plt.subplots(1, 2, figsize=(11, 5), dpi=300)
-        ax1   = axes[0]  # 左下（Panel A）
-        ax2   = axes[1]  # 右下（Panel B）
+        ax1   = axes[0]  
+        ax2   = axes[1]  
 
-        # --- 左图 ---
+    
         dir_1 = np.arange(2, 93, 5)
         package1 = {'color': 'blue', 'label': 'Kinetic'}
         plot_co2_data(ax1, dir="./Melt_Scenario2/oxi_standard", dir_list=dir_1, package=package1)
@@ -161,7 +161,7 @@ if __name__ == '__main__':
         ax1.axhline(y = 0.726, c = 'r', lw = 2, alpha = 0.6, ls = ':')
         ax1.tick_params(top=True, labeltop=True)
         ax1.legend(loc='lower left', ncol=1, fontsize=12, frameon=False)
-        # --- 右图 ---
+        # 
         dir_1 = np.arange(2, 93, 5)
         package1 = {'color': 'blue', 'label': 'Kinetic'}
         plot_co2_data(ax2, dir="./Melt_Scenario2/oxi_lthre", dir_list=dir_1, package=package1)
@@ -204,18 +204,18 @@ if __name__ == '__main__':
         final_dia = np.array(final_dia)
         frac      = np.array(frac)
 
-        # 线性拟合
+        
         slope, intercept, r, p, se = linregress(final_dia, frac)
         r2     = r**2
         x_fit  = np.linspace(final_dia.min(), final_dia.max(), 200)
         y_fit  = slope * x_fit + intercept
 
-        # 散点
+    
         ax_tl.scatter(final_dia, frac,
                     color='steelblue', s=15, alpha=0.6, zorder=2,
                     label=r'CO$_2$ = 15 vol%, N$_2$ = 85 vol%')
 
-        # 拟合线，R² 放进 label
+        
         ax_tl.plot(x_fit, y_fit,
                 color='tomato', lw=1.5, zorder=3,
                 label=f'Linear fit ($R^2 = {r2:.3f}$)')
@@ -229,6 +229,6 @@ if __name__ == '__main__':
         ax_tl.grid(True, linestyle=':', alpha=0.3)
 
         fig.tight_layout()
-        fig.savefig('batch_distri2.pdf')
+        fig.savefig('batch_distri.pdf')
         plt.show()
         
