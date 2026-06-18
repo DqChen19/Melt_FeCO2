@@ -4,7 +4,7 @@
 
 This repository contains the datasets, atmospheric models, and entry-modeling codes used in the manuscript:
 
-> Chen, D., Catling, D. C., et al. *CO$_2$ Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
+> Chen, D., Catling, D. C., et al. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
 
 ## Repository Contents
 
@@ -34,7 +34,7 @@ https://www-mars.lmd.jussieu.fr/
 
 ### 3. Experimental Kinetics Data
 
-Experimental measurements of Fe--CO$_2$ oxidation kinetics conducted at the University of Washington.
+Experimental measurements of Fe-CO2 oxidation kinetics conducted at the University of Washington.
 
 Contents:
 
@@ -48,4 +48,4 @@ Experiments were carried out in the Department of Chemistry and the Department o
 
 If you use these data or codes, please cite:
 
-Chen, D., Catling, D. C., et al. *CO$_2$ Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
+Chen, D., Catling, D. C., et al. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
