@@ -1,7 +1,6 @@
 #!/bin/bash
 
-conda actibate myenv_conda  
-for i in $(seq 0.05 0.1 0.90)
+for i in $(seq 0.02 0.1 0.92)
 do
     echo "Running for CO2 = $i"
     python3 version1_entry_model.py $i
