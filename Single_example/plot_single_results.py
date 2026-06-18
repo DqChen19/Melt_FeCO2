@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from numpy import pi
 
-# === 1. Utility function ===
+#####
 def load_columns(filename):
     df = pd.read_csv(filename, header=None)
     mfe  = np.array(df.iloc[:, 8])
@@ -25,7 +25,7 @@ def load_columns(filename):
         'rad': rad
     }
 
-# === 2. Load all datasets ===
+#####
 datasets = {
     '20': load_columns('./Single_example/Ver1_Output_CO2_20.log'),
     '70': load_columns('./Single_example/Ver1_Output_CO2_69.log'),
@@ -34,7 +34,6 @@ datasets = {
 alt20 = datasets['20']['alt']
 alt70 = datasets['70']['alt']
 
-# 计算 Fe area 分数
 rad_fe_20  = datasets['20']['mfe']/7000
 rad_feo_20 = datasets['20']['mfeo']/4400 
 frac_20    = rad_fe_20 ** 2/ (rad_fe_20 ** 2 + rad_feo_20 ** 2)
@@ -43,28 +42,26 @@ rad_fe_70  = datasets['70']['mfe']/7000 #((3*datasets['70']['mfe']/7000.0)  / (4
 rad_feo_70 = datasets['70']['mfeo']/4400 #((3*datasets['70']['mfeo']/4400.0) / (4.0*pi))**(1/3)
 frac_70    = rad_fe_70 ** 2 / (rad_fe_70 ** 2 + rad_feo_70 ** 2)
 
-# === 3. Prepare plot ===
-# === 3. Prepare plot ===
 fig, axs = plt.subplots(3, 3, figsize=(12,9), sharey=False)
 plt.subplots_adjust(wspace=0.1, hspace=0.1)
 
-plt.rcParams['font.size'] = 14          # 全局字体（包括刻度）
-plt.rcParams['axes.labelsize'] = 15     # x/y label 字号
-plt.rcParams['axes.titlesize'] = 15     # 子图标题字号
-plt.rcParams['xtick.labelsize'] = 14    # x 轴刻度字号
-plt.rcParams['ytick.labelsize'] = 14    # y 轴刻度字号
-plt.rcParams['legend.fontsize'] = 14    # 图例字号
+plt.rcParams['font.size'] = 14          
+plt.rcParams['axes.labelsize'] = 15     
+plt.rcParams['axes.titlesize'] = 15     
+plt.rcParams['xtick.labelsize'] = 14   
+plt.rcParams['ytick.labelsize'] = 14   
+plt.rcParams['legend.fontsize'] = 14   
 
 color20 = 'blue'
 color70 = 'green'
 
-# Y-axis
+
 for i in range(3):
     for j in range(3):
         axs[i, j].set_ylim(78.4, 92)
         axs[i, j].set_yticks([80,84,88,92])
 
-# --- Row 1, Column 1: Temperature ---
+
 ax = axs[0, 0]
 ax.axvspan(1650, 2400, color='yellow', alpha=0.15, label='Reactive region')
 ax.axvspan(1811, 2400, color='red', alpha=0.1, label='Reactive region')
@@ -81,7 +78,7 @@ ax.set_xlim([800,2400])
 ax.tick_params(axis='both', labelsize=14)
 ax.set_xticks([800,1200,1600,2000,2400])
 
-# --- Row 1, Column 2: Velocity ---
+
 ax = axs[0, 1]
 ax.plot(datasets['20']['vel']/1000, alt20, c=color20, label='20 vol% CO$_2$')
 ax.plot(datasets['70']['vel']/1000, alt70, c=color70,   label='70 vol% CO$_2$')
@@ -90,7 +87,6 @@ ax.set_title('(B) Velocity profile')
 ax.set_xlim([0,14])
 ax.tick_params(axis='both', labelsize=14)
 
-# --- Row 1, Column 3: Rad ---
 ax = axs[0, 2]
 ax.plot(datasets['20']['rad']*2, alt20, c=color20, label='20 vol% CO$_2$')
 ax.plot(datasets['70']['rad']*2, alt70, c=color70,   label='70 vol% CO$_2$')
@@ -98,7 +94,7 @@ ax.set_xlabel('Diameter (µm)', fontsize = 14)
 ax.set_title('(C) Particle diameter')
 ax.tick_params(axis='both', labelsize=14)
 
-# ---   Row 2, Column 1: Fe fraction---
+#
 ax = axs[1, 0]
 ax.plot(frac_20, alt20, c=color20, label='20 vol% CO$_2$')
 ax.plot(frac_70, alt70, c=color70,   label='70 vol% CO$_2$')
@@ -110,7 +106,6 @@ ax.tick_params(axis='both', labelsize=14)
 ax.set_xticks([0,0.2,0.4,0.6,0.8,1.0])
 ax.set_ylabel('Altitude (km)',fontsize = 14)
 
-# ---   Row 2, Column 2: FeO fraction---
 ax = axs[1, 1]
 ax.plot(datasets['20']['mfeo']*1e3/(56+16), alt20, c=color20, label='20 vol% CO$_2$')
 ax.plot(datasets['70']['mfeo']*1e3/(56+16), alt70, c=color70,   label='70 vol% CO$_2$')
@@ -118,7 +113,6 @@ ax.set_xlabel('FeO (mol)', fontsize = 14)
 ax.set_title('(E) Cumulative FeO produced')
 ax.tick_params(axis='both', labelsize=14)
 
-# ---   Row 2, Column 3:total oxidation ---
 ax = axs[1, 2]
 ax.plot(datasets['20']['oxi'], alt20, c=color20, label='20 vol% CO$_2$')
 ax.plot(datasets['70']['oxi'], alt70, c=color70,   label='70 vol% CO$_2$')
@@ -127,7 +121,7 @@ ax.set_title('(F) Total oxidation')
 ax.set_xscale('log')
 ax.tick_params(axis='both', labelsize=14)
 
-# --- Row 3: CO2 total, CO2 fraction reactive, 
+
 ax = axs[2, 0]
 ax.plot(datasets['20']['add_o'], alt20, c=color20, label='20 vol% CO$_2$')
 ax.plot(datasets['70']['add_o'], alt70, c=color70, label='70 vol% CO$_2$')
