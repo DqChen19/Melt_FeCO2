@@ -4,7 +4,7 @@
 
 This repository contains the datasets, atmospheric models, and entry-modeling codes used in the manuscript:
 
-> Chen, D., Catling, D. C., et al. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
+> Chen, D., Catling, D. C. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
 
 ## Repository Contents
 
@@ -48,4 +48,4 @@ Experiments were carried out in the Department of Chemistry and the Department o
 
 If you use these data or codes, please cite:
 
-Chen, D., Catling, D. C., et al. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
+Chen, D., Catling, D. C. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*.
