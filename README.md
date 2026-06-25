@@ -1,6 +1,3 @@
-# Data and Code for
-
-## CO$_2$ Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere
 
 This repository contains the datasets, atmospheric models, and entry-modeling codes used in the manuscript:
 
@@ -16,7 +13,7 @@ Contents:
 
 * One-dimensional atmospheric-entry model
 * Archean atmospheric composition profiles generated using photochemical modeling
-* Simulation outputs for a range of atmospheric CO$_2$ abundances
+* Simulation outputs for a range of atmospheric CO2 abundances
 
 ### 2. Martian Atmospheric Entry Model
 
@@ -46,4 +43,4 @@ Experiments were carried out in the Department of Chemistry and the Department o
 
 ## Citation
 
-If you use these data or codes, please cite. The full citation will be available when the manuscript is published
+The full citation will be available when the manuscript is published
