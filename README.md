@@ -35,9 +35,7 @@ Experimental measurements of Fe-CO2 oxidation kinetics conducted at the Universi
 
 Contents:
 
-* Raw and processed kinetic datasets
-* GC--MS calibration and reaction-rate calculations
-* Supporting data used to derive oxidation-rate parameterizations
+* GC-MS Kinetic datasets
 
 Experiments were carried out in the Department of Chemistry and the Department of Earth and Space Sciences at the University of Washington.
 
