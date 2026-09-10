@@ -28,24 +28,37 @@ def load_columns(filename):
 # === 2. Load all datasets ===
 datasets = {
     '20': load_columns('./Single_example/Ver1_Output_CO2_20.log'),
+    '40': load_columns('./Single_example/Ver1_Output_CO2_40.log'),
     '70': load_columns('./Single_example/Ver1_Output_CO2_69.log'),
+    '90': load_columns('./Single_example/Ver1_Output_CO2_89.log'),
 }
 
 alt20 = datasets['20']['alt']
+alt40 = datasets['40']['alt']
 alt70 = datasets['70']['alt']
+alt90 = datasets['90']['alt']
 
 # 计算 Fe area 分数
 rad_fe_20  = datasets['20']['mfe']/7000
 rad_feo_20 = datasets['20']['mfeo']/4400 
 frac_20    = rad_fe_20 ** 2/ (rad_fe_20 ** 2 + rad_feo_20 ** 2)
 
+rad_fe_40  = datasets['40']['mfe']/7000
+rad_feo_40 = datasets['40']['mfeo']/4400 
+frac_40    = rad_fe_40 ** 2/ (rad_fe_40 ** 2 + rad_feo_40 ** 2)
+
 rad_fe_70  = datasets['70']['mfe']/7000 #((3*datasets['70']['mfe']/7000.0)  / (4.0*pi))**(1/3)
 rad_feo_70 = datasets['70']['mfeo']/4400 #((3*datasets['70']['mfeo']/4400.0) / (4.0*pi))**(1/3)
 frac_70    = rad_fe_70 ** 2 / (rad_fe_70 ** 2 + rad_feo_70 ** 2)
 
+
+rad_fe_90  = datasets['90']['mfe']/7000 #((3*datasets['70']['mfe']/7000.0)  / (4.0*pi))**(1/3)
+rad_feo_90 = datasets['90']['mfeo']/4400 #((3*datasets['70']['mfeo']/4400.0) / (4.0*pi))**(1/3)
+frac_90    = rad_fe_90 ** 2 / (rad_fe_90 ** 2 + rad_feo_90 ** 2)
+
 # === 3. Prepare plot ===
 # === 3. Prepare plot ===
-fig, axs = plt.subplots(3, 3, figsize=(12,9), sharey=False)
+fig, axs = plt.subplots(3, 3, figsize=(11,8), sharey=False)
 plt.subplots_adjust(wspace=0.1, hspace=0.1)
 
 plt.rcParams['font.size'] = 14          # 全局字体（包括刻度）
@@ -56,7 +69,9 @@ plt.rcParams['ytick.labelsize'] = 14    # y 轴刻度字号
 plt.rcParams['legend.fontsize'] = 14    # 图例字号
 
 color20 = 'blue'
-color70 = 'green'
+color40 = 'green'
+color70 = 'purple'
+color90 = 'pink'
 
 # Y-axis
 for i in range(3):
@@ -69,7 +84,9 @@ ax = axs[0, 0]
 ax.axvspan(1650, 2400, color='yellow', alpha=0.15, label='Reactive region')
 ax.axvspan(1811, 2400, color='red', alpha=0.1, label='Reactive region')
 ax.plot(datasets['20']['temp'], alt20, c=color20, label='20 vol% CO$_2$')
+ax.plot(datasets['40']['temp'], alt40, c=color40, label='40 vol% CO$_2$')
 ax.plot(datasets['70']['temp'], alt70, c=color70,   label='70 vol% CO$_2$')
+ax.plot(datasets['90']['temp'], alt90, c=color90,   label='90 vol% CO$_2$')
 ax.axvline(x = 1650, ymin = 0,ymax = 1, ls = "--",color = 'black', alpha = 0.5)
 ax.axvline(x = 1811, ymin = 0,ymax = 1, ls = "--",color = 'black', alpha = 0.5)
 ax.text(1630, y = 80, s = 'FeO Melt T', rotation = 270, fontsize = 12)
@@ -83,17 +100,32 @@ ax.set_xticks([800,1200,1600,2000,2400])
 
 # --- Row 1, Column 2: Velocity ---
 ax = axs[0, 1]
+ax.plot(datasets['20']['dyp'], alt20, c=color20, label='20 vol% CO$_2$')
+ax.plot(datasets['40']['dyp'], alt40, c=color40, label='40 vol% CO$_2$')
+ax.plot(datasets['70']['dyp'], alt70, c=color70, label='70 vol% CO$_2$')
+ax.plot(datasets['90']['dyp'], alt90, c=color90, label='90 vol% CO$_2$')
+ax.set_xlabel('Pressure (Pa)', fontsize = 14)
+ax.set_title('(B) Ram pressure')
+
+ax.tick_params(axis='both', labelsize=14)
+
+'''
+ax = axs[0, 1]
 ax.plot(datasets['20']['vel']/1000, alt20, c=color20, label='20 vol% CO$_2$')
-ax.plot(datasets['70']['vel']/1000, alt70, c=color70,   label='70 vol% CO$_2$')
+ax.plot(datasets['40']['vel']/1000, alt40, c=color40, label='40 vol% CO$_2$')
+ax.plot(datasets['70']['vel']/1000, alt70, c=color70, label='70 vol% CO$_2$')
+ax.plot(datasets['90']['vel']/1000, alt90, c=color90, label='90 vol% CO$_2$')
 ax.set_xlabel('Velocity v (km s$^{-1}$)', fontsize = 14)
 ax.set_title('(B) Velocity profile')
 ax.set_xlim([0,14])
 ax.tick_params(axis='both', labelsize=14)
-
+'''
 # --- Row 1, Column 3: Rad ---
 ax = axs[0, 2]
 ax.plot(datasets['20']['rad']*2, alt20, c=color20, label='20 vol% CO$_2$')
-ax.plot(datasets['70']['rad']*2, alt70, c=color70,   label='70 vol% CO$_2$')
+ax.plot(datasets['40']['rad']*2, alt40, c=color40, label='40 vol% CO$_2$')
+ax.plot(datasets['70']['rad']*2, alt70, c=color70, label='70 vol% CO$_2$')
+ax.plot(datasets['90']['rad']*2, alt90, c=color90, label='90 vol% CO$_2$')
 ax.set_xlabel('Diameter (µm)', fontsize = 14)
 ax.set_title('(C) Particle diameter')
 ax.tick_params(axis='both', labelsize=14)
@@ -101,7 +133,9 @@ ax.tick_params(axis='both', labelsize=14)
 # ---   Row 2, Column 1: Fe fraction---
 ax = axs[1, 0]
 ax.plot(frac_20, alt20, c=color20, label='20 vol% CO$_2$')
+ax.plot(frac_40, alt40, c=color40, label='40 vol% CO$_2$')
 ax.plot(frac_70, alt70, c=color70,   label='70 vol% CO$_2$')
+ax.plot(frac_90, alt90, c=color90,   label='90 vol% CO$_2$')
 ax.set_xlabel('Fe/(Fe + FeO) in vol', fontsize = 14)
 ax.set_ylabel('Altitude (km)', fontsize =14)
 ax.set_title('(D) Metallic Fe fraction')
@@ -113,7 +147,9 @@ ax.set_ylabel('Altitude (km)',fontsize = 14)
 # ---   Row 2, Column 2: FeO fraction---
 ax = axs[1, 1]
 ax.plot(datasets['20']['mfeo']*1e3/(56+16), alt20, c=color20, label='20 vol% CO$_2$')
+ax.plot(datasets['40']['mfeo']*1e3/(56+16), alt40, c=color40, label='40 vol% CO$_2$')
 ax.plot(datasets['70']['mfeo']*1e3/(56+16), alt70, c=color70,   label='70 vol% CO$_2$')
+ax.plot(datasets['90']['mfeo']*1e3/(56+16), alt90, c=color90,   label='90 vol% CO$_2$')
 ax.set_xlabel('FeO (mol)', fontsize = 14)
 ax.set_title('(E) Cumulative FeO produced')
 ax.tick_params(axis='both', labelsize=14)
@@ -121,16 +157,20 @@ ax.tick_params(axis='both', labelsize=14)
 # ---   Row 2, Column 3:total oxidation ---
 ax = axs[1, 2]
 ax.plot(datasets['20']['oxi'], alt20, c=color20, label='20 vol% CO$_2$')
+ax.plot(datasets['40']['oxi'], alt40, c=color40, label='40 vol% CO$_2$')
 ax.plot(datasets['70']['oxi'], alt70, c=color70,   label='70 vol% CO$_2$')
+ax.plot(datasets['90']['oxi'], alt90, c=color90,   label='90 vol% CO$_2$')
 ax.set_xlabel('Oxidation per step (kg/s)', fontsize = 14)
-ax.set_title('(F) Total oxidation')
+ax.set_title('(F) Total oxidation')#
 ax.set_xscale('log')
 ax.tick_params(axis='both', labelsize=14)
 
 # --- Row 3: CO2 total, CO2 fraction reactive, 
 ax = axs[2, 0]
 ax.plot(datasets['20']['add_o'], alt20, c=color20, label='20 vol% CO$_2$')
+ax.plot(datasets['40']['add_o'], alt40, c=color40, label='40 vol% CO$_2$')
 ax.plot(datasets['70']['add_o'], alt70, c=color70, label='70 vol% CO$_2$')
+ax.plot(datasets['90']['add_o'], alt90, c=color90, label='90 vol% CO$_2$')
 ax.set_xlabel('O uptake (kg/s)', fontsize = 14)
 ax.set_title('(G) Incident O ')
 ax.set_xscale('log')
@@ -139,7 +179,9 @@ ax.set_ylabel('Altitude (km)',fontsize = 14)
 
 ax = axs[2, 1]
 ax.plot(np.minimum(datasets['20']['kin'], datasets['20']['add_co2'])/datasets['20']['add_co2'], alt20, c=color20, label='20 vol%  CO$_2$')
-ax.plot(np.minimum(datasets['70']['kin'], datasets['70']['add_co2'])/datasets['70']['add_co2'], alt70, c=color70,   label='70 vol% CO$_2$')
+ax.plot(np.minimum(datasets['40']['kin'], datasets['40']['add_co2'])/datasets['40']['add_co2'], alt40, c=color40, label='40 vol%  CO$_2$')
+ax.plot(np.minimum(datasets['70']['kin'], datasets['70']['add_co2'])/datasets['70']['add_co2'], alt70, c=color70, label='70 vol% CO$_2$')
+ax.plot(np.minimum(datasets['90']['kin'], datasets['90']['add_co2'])/datasets['90']['add_co2'], alt90, c=color90, label='90 vol% CO$_2$')
 ax.tick_params(axis='both', labelsize=14)
 ax.set_title('(H) CO$_2$ reacted/incident')
 ax.set_xscale('log')
@@ -147,7 +189,9 @@ ax.set_xlabel('Ratio', fontsize = 14)
 
 ax = axs[2, 2]
 ax.plot(datasets['20']['add_o'] / datasets['20']['oxi'], alt20, c=color20, label='20 vol% total CO$_2$')
-ax.plot(datasets['70']['add_o'] / datasets['70']['oxi'], alt70, c=color70,   label='70 vol% total CO$_2$')
+ax.plot(datasets['40']['add_o'] / datasets['40']['oxi'], alt40, c=color40, label='40 vol% total CO$_2$')
+ax.plot(datasets['70']['add_o'] / datasets['70']['oxi'], alt70, c=color70, label='70 vol% total CO$_2$')
+ax.plot(datasets['90']['add_o'] / datasets['90']['oxi'], alt90, c=color90, label='90 vol% total CO$_2$')
 ax.set_xlabel('Ratio', fontsize = 14)
 ax.tick_params(axis='both', labelsize=14)
 ax.set_title('(I) O+O$_2$ reacted/total oxidants')
@@ -163,7 +207,7 @@ fig.legend(
     labels,
     loc='lower center',
     bbox_to_anchor=(0.5, 0.02),
-    ncol=2,
+    ncol=4,
     fontsize=14,
     frameon = False
 )
@@ -173,5 +217,9 @@ plt.tight_layout(rect=[0,0.05,1,1])
 #plt.show()
 #fig.savefig('./Single_example/Single_plot_results.pdf')
 
-print(sum(datasets['20']['oxi'][4320:])/sum(datasets['20']['oxi']))
-print(sum(datasets['70']['oxi'][4307:])/sum(datasets['70']['oxi']))
+#print(sum(datasets['20']['oxi'][4320:])/sum(datasets['20']['oxi']))
+#print(sum(datasets['40']['oxi'][4320:])/sum(datasets['40']['oxi']))
+#print(sum(datasets['70']['oxi'][4307:])/sum(datasets['70']['oxi']))
+print(sum(datasets['20']['add_o'][:])/sum(datasets['20']['oxi']))
+print(sum(datasets['40']['add_o'][:])/sum(datasets['40']['oxi']))
+print(sum(datasets['70']['add_o'][:])/sum(datasets['70']['oxi']))

@@ -134,10 +134,10 @@ if __name__ == '__main__':
     fig3 = 1
     if fig3:
         fig, axes = plt.subplots(1, 2, figsize=(11, 5), dpi=300)
-        ax1   = axes[0]  # 左下（Panel A）
-        ax2   = axes[1]  # 右下（Panel B）
+        ax1   = axes[0]  
+        ax2   = axes[1]  
 
-        # --- 左图 ---
+      
         dir_1 = np.arange(2, 93, 5)
         package1 = {'color': 'blue', 'label': 'Kinetic'}
         plot_co2_data(ax1, dir="./Melt_Scenario2/oxi_standard", dir_list=dir_1, package=package1)
@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
         dir_3 = np.arange(2, 93, 5)
         package3 = {'color': 'orange', 'label': 'Add all'}
-        plot_co2_data(ax1, dir="./Scenario1/add_standard", dir_list=dir_3, package=package3)
+        plot_co2_data(ax1, dir="./Melt_Scenario1/add_standard", dir_list=dir_3, package=package3)
 
         ax1.axvline(x = 11,  ymin=0.73, ymax=1, c = 'blue', lw = 1.5, alpha = 0.8, ls = '--')
         ax1.plot(11, 0.74,marker='v', color='blue', markersize=5, alpha=0.8, transform=ax1.get_xaxis_transform(), clip_on=False)
@@ -161,7 +161,7 @@ if __name__ == '__main__':
         ax1.axhline(y = 0.726, c = 'r', lw = 2, alpha = 0.6, ls = ':')
         ax1.tick_params(top=True, labeltop=True)
         ax1.legend(loc='lower left', ncol=1, fontsize=12, frameon=False)
-        # --- 右图 ---
+        
         dir_1 = np.arange(2, 93, 5)
         package1 = {'color': 'blue', 'label': 'Kinetic'}
         plot_co2_data(ax2, dir="./Melt_Scenario2/oxi_lthre", dir_list=dir_1, package=package1)
@@ -172,7 +172,7 @@ if __name__ == '__main__':
 
         dir_3 = np.arange(2, 93, 5)
         package3 = {'color': 'orange', 'label': 'Add all'}
-        plot_co2_data(ax2, dir="./Scenario1/add_lthre", dir_list=dir_3, package=package3)
+        plot_co2_data(ax2, dir="./Melt_Scenario1/add_lthre", dir_list=dir_3, package=package3)
 
         ax2.set_xlim(2, 92)
         ax2.set_ylim(0, 1)
@@ -183,8 +183,8 @@ if __name__ == '__main__':
         ax2.axhline(y = 0.726, c = 'r', lw = 2, alpha = 0.6, ls = ':')
         ax2.legend(loc='lower left', ncol=1, fontsize=12, frameon=False)
         plt.tight_layout()
-        plt.savefig('Batch_result.png')   # 建议用 fig.savefig() 或 plt.savefig()，放在 show() 之前
-        #plt.show()
+        plt.savefig('Batch_result.pdf')   #
+        plt.show()
     else:
         from scipy.stats import linregress
 

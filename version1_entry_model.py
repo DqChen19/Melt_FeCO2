@@ -28,7 +28,7 @@ DELTA_H_OX_O2 = 3716000 #heat of oxidation for O+Fe->FeO [J kg-1]
 ########TEMP THRESHOLD #######
 
 
-temp_thre = 1000
+temp_thre = 1650
 
 #the latent heat is the same for Fe and FeO in this model
 L_V = 6.0E6 #latent heat of vaporization for FeO/Fe [J kg-1]
@@ -508,9 +508,9 @@ def simulate_particle(input_mass, input_vel, input_theta, co2_percent=-1):
         add_o, add_o1, add_o2 = 0,0,0
         add_co2 = 0
         co2_rho = 0
-        co2_rho = rho_a*co2_wt# [kg/m3] 
-        o_rho = rho_a*o_wt# [kg/m3]    
-        o2_rho = rho_a*o2_wt  
+        co2_rho = rho_a*co2_wt # [kg/m3] 
+        o_rho = rho_a * o_wt # [kg/m3]    
+        o2_rho = rho_a * o2_wt  
         ram_p =  1/2*vel**2*co2_rho #[kg m-1 s-2]
         #A = 0
         if temp > temp_thre:
@@ -524,7 +524,7 @@ def simulate_particle(input_mass, input_vel, input_theta, co2_percent=-1):
                 S = pi*rad**2 #m2
                 add_o1 = vel * S * o_rho #[kg s-1] 
                 add_o2 = vel * S * o2_rho #[kg s-1]
-                add_o = add_o1 + add_o2 * 2
+                add_o = add_o1 + add_o2 #* 2
                 k_rate = fe_co2_rate_pressure(temp, ram_p) #mol m-2 s-1 Pa-1
                 add_co2 = vel*M_O*S*co2_rho/M_CO2 #[kg s-1]
                 
@@ -860,7 +860,7 @@ def generateRandomSampleData(num_samples=100, output_dir="rand_sim",
     if len(input_dir) > 0:
         #input directory given, read it
         sys.stderr.write("Reading data from: %s\n"%(input_dir))
-        args = readModelDataFile(input_dir + "/args_array.dat")
+        args = readModelDataFile(input_dir + "args_array.dat")
         for i in range(len(args)):
             masses[i] = args[i][0]
             velocities[i] = args[i][1]
@@ -1165,9 +1165,9 @@ if __name__ =='__main__':
             sys.exit(1)
 
         co2_frac = float(sys.argv[1])
-        output_dir = "./Melt2_Scenario3/oxi_lthre/co2_%0.0f" % (co2_frac * 100)
+        output_dir = "./Melt_new_Scenario2/oxi_standard/co2_%0.0f" % (co2_frac * 100)
 
-        generateRandomSampleData(num_samples=60, output_dir=output_dir, input_dir="./Melt_Scenario2") #"./Melt_Scenario2"
+        generateRandomSampleData(num_samples=60, output_dir=output_dir) #"./Melt_Scenario2"
 
     else:
         res = plot_particle_parameters(3.665E-9/8, 13000, 45*pi/180, CO2_frac=0.9) #CO2_frac can be changed for single particle plot
