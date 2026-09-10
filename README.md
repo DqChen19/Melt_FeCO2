@@ -1,0 +1,38 @@
+
+This repository contains the datasets, atmospheric models, and entry-modeling codes used in the manuscript:
+
+> Chen, D., Catling, D. C. Sadilek, M. Bol, B. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*. Currently under review at PNAS
+
+## Repository Contents
+
+### 1. Archean Atmospheric Entry Model
+
+Models used to simulate the oxidation of iron cosmic spherules (ICSs) during atmospheric entry under Archean Earth conditions.
+
+Contents:
+
+* One-dimensional atmospheric-entry model
+* Archean atmospheric composition profiles generated using photochemical modeling
+* Simulation outputs for a range of atmospheric CO2 abundances
+
+### 2. Martian Atmospheric Entry Model
+
+Extension of the atmospheric-entry model to present-day Mars by incorporating Martian atmospheric structure and planetary parameters.
+
+Contents:
+
+* One-dimensional atmospheric-entry model adapted for Mars
+* Atmospheric density and composition profiles derived from the Mars Climate Database (MCD): Mars Climate Database: https://www-mars.lmd.jussieu.fr/
+* Simulation outputs for iron cosmic spherules entering the modern Martian atmosphere
+
+### 3. Experimental Kinetics Data
+
+Experimental measurements of Fe-CO2 oxidation kinetics conducted at the University of Washington.
+
+Contents:
+
+* GC-MS Kinetic datasets
+
+## Citation
+
+The full citation will be available when the manuscript is published
