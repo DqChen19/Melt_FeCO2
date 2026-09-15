@@ -1,7 +1,7 @@
 
 This repository contains the datasets, atmospheric models, and entry-modeling codes used in the manuscript:
 
-> Chen, D., Catling, D. C. Sadilek, M. Bol, B. *CO2 Oxidation of Molten Iron Constrains Cosmic Spherule Preservation and Archean Atmosphere*. Currently under review at PNAS
+> Chen, D., Catling, D. C. Sadilek, M. Bol, B. *Measured oxidation kinetics of molten iron by \ce{CO2} constrains cosmic spherule preservation and Archean atmosphere*. Currently under review at PNAS
 
 ## Repository Contents
 
